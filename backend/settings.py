@@ -164,7 +164,7 @@ SPECTACULAR_SETTINGS = {
 
 
 # CORS Settings (for frontend integration)
-CORS_ALLOWED_ORIGINS = ["http://localhost:8000","http://localhost:3000",,"http://202.79.51.253:9494"]
+CORS_ALLOWED_ORIGINS = ["http://localhost:8000","http://localhost:3000","http://202.79.51.253:9494"]
 
 
 CORS_ALLOW_CREDENTIALS = True
