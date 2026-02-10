@@ -167,7 +167,7 @@ SPECTACULAR_SETTINGS = {
 CORS_ALLOWED_ORIGINS = os.environ.get(
     'CORS_ALLOWED_ORIGINS',
     "http://localhost:3000"
-    "202.79.51.253:9494"
+    "http://202.79.51.253:9494"
 ).split(',')
 
 CORS_ALLOW_CREDENTIALS = True
@@ -176,7 +176,7 @@ CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "202.79.51.253:9494"
+    "http://202.79.51.253:9494"
 ]
 
 # Allow all HTTP methods
