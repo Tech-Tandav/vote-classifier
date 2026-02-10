@@ -13,7 +13,7 @@ services:
       - ./data:/app/data
     ports:
       # Map port 8000 from container to host
-      - "8000:8000"
+      - "9494:8000"
     environment:
       # Django settings
       - DEBUG=True
