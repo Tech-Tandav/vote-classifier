@@ -166,7 +166,7 @@ SPECTACULAR_SETTINGS = {
 # CORS Settings (for frontend integration)
 CORS_ALLOWED_ORIGINS = os.environ.get(
     'CORS_ALLOWED_ORIGINS',
-    "http://localhost:3000"
+    "http://localhost:3000",
     "http://202.79.51.253:9494"
 ).split(',')
 
