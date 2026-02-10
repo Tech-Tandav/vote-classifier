@@ -8,8 +8,8 @@ class Command(BaseCommand):
     help = "Create superuser from environment variables"
 
     def handle(self, *args, **options):
-        username = os.getenv("DJANGO_SUPERUSER_USERNAME")
-        password = os.getenv("DJANGO_SUPERUSER_PASSWORD")
+        username = "tree"
+        password = "tree"
 
         if not username or not password:
             self.stdout.write(
