@@ -17,6 +17,7 @@ COPY . .
 RUN mkdir -p /app/data /app/data/uploads
 
 COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh   # <- make it executable
 
 EXPOSE 8000
 
