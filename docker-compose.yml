@@ -1,27 +1,16 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  # Django Web Application
   web:
     build: .
     container_name: voter_analysis_api
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      # Mount current directory to /app in container
-      - .:/app
-      # Persist SQLite database
-      - ./data:/app/data
     ports:
-      # Map port 8000 from container to host
       - "9494:8000"
     environment:
-      # Django settings
-      - DEBUG=True
-      - SECRET_KEY=your-secret-key-change-in-production
-      - ALLOWED_HOSTS=localhost,127.0.0.1
+      DEBUG: "True"
+      SECRET_KEY: your-secret-key-change-in-production
+      ALLOWED_HOSTS: localhost,127.0.0.1
+    volumes:
+      - ./data:/app/data
     stdin_open: true
     tty: true
-
-# Volumes for persistent data
-volumes:
-  data:
