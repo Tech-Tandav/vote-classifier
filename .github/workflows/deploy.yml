@@ -16,6 +16,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 4096
           script: |
-            cd /home/ubuntu/projects/election/vote-lassifier
+            cd /home/ubuntu/projects/election/vote-classifier
             git pull
             docker compose -f docker-compose.yml up -d --build --force-recreate
