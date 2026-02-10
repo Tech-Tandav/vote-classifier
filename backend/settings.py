@@ -14,7 +14,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-dev-key-change-in-pro
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = ["202.79.51.253"]
 
 
 # Application definition
@@ -167,6 +167,7 @@ SPECTACULAR_SETTINGS = {
 CORS_ALLOWED_ORIGINS = os.environ.get(
     'CORS_ALLOWED_ORIGINS',
     "http://localhost:3000"
+    "202.79.51.253:9494"
 ).split(',')
 
 CORS_ALLOW_CREDENTIALS = True
@@ -175,6 +176,7 @@ CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "202.79.51.253:9494"
 ]
 
 # Allow all HTTP methods
