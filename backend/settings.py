@@ -17,6 +17,7 @@ DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 ALLOWED_HOSTS = ["202.79.51.253"]
 
 
+
 # Application definition
 INSTALLED_APPS = [
     # Django built-in apps
