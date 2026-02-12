@@ -11,6 +11,10 @@ services:
       SECRET_KEY: your-secret-key-change-in-production
       ALLOWED_HOSTS: localhost,127.0.0.1
     volumes:
-      - ./data:/app/data
+      - voter_data:/app/data   # <-- named volume
     stdin_open: true
     tty: true
+
+volumes:
+  voter_data:
+
