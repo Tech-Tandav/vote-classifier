@@ -165,10 +165,7 @@ SPECTACULAR_SETTINGS = {
 
 
 # CORS Settings (for frontend integration)
-CORS_ALLOWED_ORIGINS = os.environ.get(
-    'CORS_ALLOWED_ORIGINS',
-    "http://localhost:8000"
-).split(',')
+CORS_ALLOWED_ORIGINS = True
 
 
 CORS_ALLOW_CREDENTIALS = True
