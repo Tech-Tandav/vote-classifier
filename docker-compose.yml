@@ -11,7 +11,7 @@ services:
       SECRET_KEY: your-secret-key-change-in-production
       ALLOWED_HOSTS: localhost,127.0.0.1
     volumes:
-      - voter_data:/app/data   # <-- named volume
+      - vote_classifier:/app/data   
     stdin_open: true
     tty: true
 
