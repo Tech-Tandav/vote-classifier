@@ -165,17 +165,13 @@ SPECTACULAR_SETTINGS = {
 
 
 # CORS Settings (for frontend integration)
-CORS_ALLOW_ALL_ORIGINS = True
-
-
+# CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = ["http://localhost:8000","http://localhost:5501","http://202.79.51.253:9494"]
 
 # CSRF Settings
-CSRF_TRUSTED_ORIGINS = os.environ.get(
-    'CSRF_TRUSTED_ORIGINS',
-    "http://localhost:8000"
-).split(',')
+CSRF_TRUSTED_ORIGINS = ["http://localhost:8000","http://localhost:5501","http://202.79.51.253:9494"]
 
 # Allow all HTTP methods
 CORS_ALLOW_METHODS = [
