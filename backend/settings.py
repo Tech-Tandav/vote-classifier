@@ -14,7 +14,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-dev-key-change-in-pro
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ["202.79.51.253", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["202.79.51.253", "localhost", "127.0.0.1", "api.voter.election.dahalpradeep.com.np"]
 
 # Application definition
 INSTALLED_APPS = [
@@ -134,6 +134,8 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://202.79.51.253",
+    "https://api.voter.election.dahalpradeep.com.np",
+    "https://voter.election.dahalpradeep.com.np"
 ]
 
 
