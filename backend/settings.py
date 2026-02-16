@@ -167,7 +167,7 @@ SPECTACULAR_SETTINGS = {
 # CORS Settings (for frontend integration)
 CORS_ALLOW_ALL_ORIGINS = True
 
-# CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_CREDENTIALS = True
 # # CORS_ALLOWED_ORIGINS = ["http://localhost:8000","http://127.0.0.1:5501", "http://127.0.0.1:5500","http://202.79.51.253:9494"]
 
 # # CSRF Settings
