@@ -20,7 +20,7 @@ ALLOWED_HOSTS = ["202.79.51.253"]
 
 # Application definition
 INSTALLED_APPS = [
-    'corsheaders',
+    
     # Django built-in apps
     'django.contrib.admin',
     'django.contrib.auth',
@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'rest_framework',           # Django REST Framework
     'drf_spectacular',          # API Documentation
                   # CORS headers for frontend
+    # 'corsheaders',
     'django_extensions',        # Useful Django extensions
     
     # Our apps
@@ -40,7 +41,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',       # CORS - MUST be first!
+    # 'corsheaders.middleware.CorsMiddleware',       # CORS - MUST be first!
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',  # Static files
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -165,30 +166,30 @@ SPECTACULAR_SETTINGS = {
 }
 
 
-# Allow all origins
-CORS_ALLOW_ALL_ORIGINS = True
+# # Allow all origins
+# CORS_ALLOW_ALL_ORIGINS = True
 
-# Allow cookies / auth headers
-CORS_ALLOW_CREDENTIALS = True
+# # Allow cookies / auth headers
+# CORS_ALLOW_CREDENTIALS = True
 
-# Allow all methods
-CORS_ALLOW_METHODS = [
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
-]
+# # Allow all methods
+# CORS_ALLOW_METHODS = [
+#     'DELETE',
+#     'GET',
+#     'OPTIONS',
+#     'PATCH',
+#     'POST',
+#     'PUT',
+# ]
 
-# Allow all headers
-CORS_ALLOW_ALL_HEADERS = True
+# # Allow all headers
+# CORS_ALLOW_ALL_HEADERS = True
 
 
-CORS_ALLOWED_ORIGINS = ["https://voter.election.dahalpradeep.com.np","http://127.0.0.1:5501", "http://127.0.0.1:5500","http://202.79.51.253:9494"]
+# CORS_ALLOWED_ORIGINS = ["https://voter.election.dahalpradeep.com.np","http://127.0.0.1:5501", "http://127.0.0.1:5500","http://202.79.51.253:9494"]
 
-# # CSRF Settings
-CSRF_TRUSTED_ORIGINS = ["https://voter.election.dahalpradeep.com.np","http://127.0.0.1:5501", "http://127.0.0.1:5500", "http://202.79.51.253:9494"]
+# # # CSRF Settings
+# CSRF_TRUSTED_ORIGINS = ["https://voter.election.dahalpradeep.com.np","http://127.0.0.1:5501", "http://127.0.0.1:5500", "http://202.79.51.253:9494"]
 
 
 
