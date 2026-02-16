@@ -14,13 +14,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-dev-key-change-in-pro
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ["202.79.51.253"]
-
-
+ALLOWED_HOSTS = ["202.79.51.253", "localhost", "127.0.0.1"]
 
 # Application definition
 INSTALLED_APPS = [
-    
     # Django built-in apps
     'django.contrib.admin',
     'django.contrib.auth',
@@ -28,25 +25,24 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     # Third-party apps
-    'rest_framework',           # Django REST Framework
-    'drf_spectacular',          # API Documentation
-                  # CORS headers for frontend
-    # 'corsheaders',
-    'django_extensions',        # Useful Django extensions
-    
+    'rest_framework',
+    'drf_spectacular',
+    'corsheaders',          # ✅ CORS
+    'django_extensions',
+
     # Our apps
-    'voters',                   # Main voter analysis app
+    'voters',
 ]
 
 MIDDLEWARE = [
-    # 'corsheaders.middleware.CorsMiddleware',       # CORS - MUST be first!
+    'corsheaders.middleware.CorsMiddleware',   # ✅ MUST be first
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Static files
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',   # ✅ CSRF
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -72,9 +68,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-
 # Database
-# Using SQLite for now - can be changed to PostgreSQL later
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -82,69 +76,66 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
-
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'Asia/Kathmandu'  # Nepal timezone
+TIME_ZONE = 'Asia/Kathmandu'
 USE_I18N = True
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
+# Static files
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Media files (Uploaded CSV files)
+# Media files
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'data' / 'uploads'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
 # Django REST Framework Configuration
 REST_FRAMEWORK = {
-    # Use Django's standard permissions (no auth for public APIs)
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
-    
-    # Pagination settings
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 50,  # Default page size for voter lists
-    
-    # Response rendering
+    'PAGE_SIZE': 50,
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer',  # Nice web UI for testing
+        'rest_framework.renderers.BrowsableAPIRenderer',
     ],
-    
-    # API Documentation schema
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-    
-    # Filtering
     'DEFAULT_FILTER_BACKENDS': [
         'rest_framework.filters.SearchFilter',
         'rest_framework.filters.OrderingFilter',
     ],
 }
+
+# =======================
+# CORS + CSRF SETTINGS
+# =======================
+
+# Dev only – allow all origins
+CORS_ALLOW_ALL_ORIGINS = True
+
+# If frontend uses cookies / sessions
+CORS_ALLOW_CREDENTIALS = True
+
+# Trust your frontend for CSRF
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://202.79.51.253",
+]
+
 
 
 # API Documentation Settings (Swagger)
@@ -164,34 +155,6 @@ SPECTACULAR_SETTINGS = {
     # Schema settings
     'COMPONENT_SPLIT_REQUEST': True,
 }
-
-
-# # Allow all origins
-# CORS_ALLOW_ALL_ORIGINS = True
-
-# # Allow cookies / auth headers
-# CORS_ALLOW_CREDENTIALS = True
-
-# # Allow all methods
-# CORS_ALLOW_METHODS = [
-#     'DELETE',
-#     'GET',
-#     'OPTIONS',
-#     'PATCH',
-#     'POST',
-#     'PUT',
-# ]
-
-# # Allow all headers
-# CORS_ALLOW_ALL_HEADERS = True
-
-
-# CORS_ALLOWED_ORIGINS = ["https://voter.election.dahalpradeep.com.np","http://127.0.0.1:5501", "http://127.0.0.1:5500","http://202.79.51.253:9494"]
-
-# # # CSRF Settings
-# CSRF_TRUSTED_ORIGINS = ["https://voter.election.dahalpradeep.com.np","http://127.0.0.1:5501", "http://127.0.0.1:5500", "http://202.79.51.253:9494"]
-
-
 
 
 
