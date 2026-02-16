@@ -29,7 +29,7 @@ services:
     volumes:
       - vote_classifier:/app/media
     ports:
-      - 9191:80
+      - 9494:80
     networks:
       - vote_classifier
     restart: always
