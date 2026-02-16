@@ -184,8 +184,8 @@ CORS_ALLOW_METHODS = [
 # Allow all headers
 CORS_ALLOW_ALL_HEADERS = True
 
-# CORS_ALLOW_CREDENTIALS = True
-# CORS_ALLOWED_ORIGINS = ["https://voter.election.dahalpradeep.com.np","http://127.0.0.1:5501", "http://127.0.0.1:5500","http://202.79.51.253:9494"]
+
+CORS_ALLOWED_ORIGINS = ["https://voter.election.dahalpradeep.com.np","http://127.0.0.1:5501", "http://127.0.0.1:5500","http://202.79.51.253:9494"]
 
 # # CSRF Settings
 CSRF_TRUSTED_ORIGINS = ["https://voter.election.dahalpradeep.com.np","http://127.0.0.1:5501", "http://127.0.0.1:5500", "http://202.79.51.253:9494"]
