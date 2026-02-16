@@ -20,6 +20,7 @@ ALLOWED_HOSTS = ["202.79.51.253"]
 
 # Application definition
 INSTALLED_APPS = [
+    'corsheaders',
     # Django built-in apps
     'django.contrib.admin',
     'django.contrib.auth',
@@ -31,7 +32,7 @@ INSTALLED_APPS = [
     # Third-party apps
     'rest_framework',           # Django REST Framework
     'drf_spectacular',          # API Documentation
-    'corsheaders',              # CORS headers for frontend
+                  # CORS headers for frontend
     'django_extensions',        # Useful Django extensions
     
     # Our apps
