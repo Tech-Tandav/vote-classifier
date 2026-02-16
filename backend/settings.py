@@ -165,37 +165,37 @@ SPECTACULAR_SETTINGS = {
 
 
 # CORS Settings (for frontend integration)
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
 # CORS_ALLOW_CREDENTIALS = True
-# CORS_ALLOWED_ORIGINS = ["http://localhost:8000","http://127.0.0.1:5501", "http://127.0.0.1:5500","http://202.79.51.253:9494"]
+CORS_ALLOWED_ORIGINS = ["https://voter.election.dahalpradeep.com.np","http://127.0.0.1:5501", "http://127.0.0.1:5500","http://202.79.51.253:9494"]
 
 # # CSRF Settings
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8000","http://127.0.0.1:5501", "http://127.0.0.1:5500", "http://202.79.51.253:9494"]
+CSRF_TRUSTED_ORIGINS = ["https://voter.election.dahalpradeep.com.np","http://127.0.0.1:5501", "http://127.0.0.1:5500", "http://202.79.51.253:9494"]
 
-# # Allow all HTTP methods
-# CORS_ALLOW_METHODS = [
-#     'DELETE',
-#     'GET',
-#     'OPTIONS',
-#     'PATCH',
-#     'POST',
-#     'PUT',
-# ]
+# Allow all HTTP methods
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
 
 # # Allow all headers including those needed for file uploads
-# CORS_ALLOW_HEADERS = [
-#     'accept',
-#     'accept-encoding',
-#     'authorization',
-#     'content-type',
-#     'dnt',
-#     'origin',
-#     'user-agent',
-#     'x-csrftoken',
-#     'x-requested-with',
-# ]
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 
 
