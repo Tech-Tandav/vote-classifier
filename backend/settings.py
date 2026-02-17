@@ -161,9 +161,13 @@ SPECTACULAR_SETTINGS = {
 
 
 
-# File Upload Settings
-DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
-FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
+
+
+# Max size of request body (in bytes)
+DATA_UPLOAD_MAX_MEMORY_SIZE = 50 * 1024 * 1024  # 50 MB
+
+# Max size of uploaded file kept in memory (before writing to disk)
+FILE_UPLOAD_MAX_MEMORY_SIZE = 50 * 1024 * 1024  # 50 MB
 
 
 # Logging Configuration

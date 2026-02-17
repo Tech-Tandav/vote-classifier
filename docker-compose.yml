@@ -1,5 +1,10 @@
 version: "3.8"
 
+
+volumes:
+  vote_classifier: {}
+
+
 networks:
   vote_classifier:
 
@@ -33,8 +38,4 @@ services:
     networks:
       - vote_classifier
     restart: always
-
-
-volumes:
-  vote_classifier:
 
