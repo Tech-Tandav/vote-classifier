@@ -1,25 +1,22 @@
-version: "3.8"
-
-
 volumes:
   vote_classifier: {}
-
 
 networks:
   vote_classifier:
 
+
 services:
-  web:
+  django:
     build: .
-    container_name: voter_analysis_api
+    container_name: voter_backend
     ports:
-      - "9494:8000"
+      - "8000:8000"
     environment:
       DEBUG: "True"
       SECRET_KEY: your-secret-key-change-in-production
-      ALLOWED_HOSTS: localhost,127.0.0.1
+      ALLOWED_HOSTS: localhost,127.0.0.1,django
     volumes:
-      - vote_classifier:/app/data   
+      - vote_classifier:/app/data
     stdin_open: true
     tty: true
     networks:
@@ -38,4 +35,3 @@ services:
     networks:
       - vote_classifier
     restart: always
-
