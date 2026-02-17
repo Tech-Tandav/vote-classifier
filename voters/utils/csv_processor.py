@@ -13,6 +13,7 @@ from django.core.exceptions import ValidationError
 from voters.models import Voter, UploadHistory
 from voters.utils import extract_surname, normalize_surname, map_surname_to_caste
 import json
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -119,7 +120,10 @@ class CSVProcessor:
             }
         
         # Create upload history record
-        file_name = getattr(self.csv_file, 'name', 'unknown.csv')
+        if isinstance(self.csv_file, str):
+            file_name = os.path.basename(self.csv_file)
+        else:
+            file_name = getattr(self.csv_file, 'name', 'unknown.csv')
         self.upload_history = UploadHistory.objects.create(
             file_name=file_name,
             uploaded_by=self.user,
@@ -219,6 +223,17 @@ class CSVProcessor:
         if pd.isna(parent):
             parent = None
         
+        if hasattr(self, 'province_override'):
+             province_val = self.province_override
+        else:
+             province_val = str(row['Province'])
+             
+        if hasattr(self, 'constituency_override'):
+             constituency_val = self.constituency_override
+        else:
+             # Default fallback if no constituency provided and not in CSV
+             constituency_val = None
+
         # Create or update voter
         Voter.objects.update_or_create(
             voter_id=int(row['VoterID']),
@@ -228,10 +243,11 @@ class CSVProcessor:
                 'age': age,
                 'gender': gender,
                 'caste_group': caste_group,
-                'province': str(row['Province']),
+                'province': province_val,
                 'district': str(row['District']),
                 'municipality': str(row['Municipality']),
                 'ward': int(row['Ward']),
+                'constituency': constituency_val,  # New field
                 'center': str(row['Center']),
                 'spouse': spouse,
                 'parent': parent,

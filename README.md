@@ -1,329 +1,264 @@
-
 # Voter Analysis Backend
-API service for analyzing ward-level voter demographic data in Nepal.
 
-## Project Overview
-This Django-based backend facilitates the import, management, and analysis of voter data. It transforms raw CSV data into actionable demographic insights, classifying voters by age, gender, and caste/ethnicity (via surname mapping). Note: This project is strictly a backend service providing a REST API and Admin Interface.
+A Django-based backend for processing and analyzing hierarchical voter data in Nepal.
 
-### Key Capabilities
-*   **Data Import**: Bulk upload of voter rolls (CSV) with validation.
-*   **Demographic Classification**: Automatic categorization of voters:
-    *   **Age Groups**: Gen Z (18-29), Working (30-45), Mature (46-60), Senior (60+).
-    *   **Caste/Ethnicity**: Inferred from surname using a database of **1200+** mappings (e.g., Kandel -> Brahmin, Thapa -> Chhetri).
-*   **Analytics**: Real-time statistical aggregation (Age distributions, Gender ratios, Cross-tabulations).
-*   **API**: Fully documented REST API .
-
----
-
-## Directory Structure
-```
-backend/
-├── backend/                # Project Settings (WSGI, ASGI, URLConf)
-├── voters/                 # Main Application
-│   ├── models.py           # Database Schema (Voter, SurnameMapping)
-│   ├── views.py            # API Endpoints & Logic
-│   ├── serializers.py      # JSON Transformation
-│   ├── utils/              # Business Logic (Analytics, CSV Processing)
-│   └── management/         # Custom Commands (load_surname_mappings)
-├── data/                   # Persistent storage (SQLite DB, Uploads)
-├── staticfiles/            # Static assets (Django Admin styles)
-├── Dockerfile              # Container definition
-└── docker-compose.yml      # Orchestration config
-```
-
-## Prerequisites
-*   **Docker** & **Docker Compose** (Recommended for easiest setup)
-*   **Python 3.11+** (If running locally)
-
----
-
-## Getting Started
-
-### Method 1: Docker (Production-Ready)
-This is the preferred method as it isolates dependencies and ensures consistency.
-
-1.  **Build and Start Services**
-    ```bash
-    sudo docker compose up --build -d
-    ```
-    The API will be available at `http://localhost:8000`.
-
-3.  **Initialize System** (Run once)
-    ```bash
-    # Apply database migrations
-    sudo docker compose exec web python manage.py migrate
-
-    # Load comprehensive surname-to-caste mappings (1200+ entries)
-    sudo docker compose exec web python manage.py load_surname_mappings
-
-    # Create an admin user
-    sudo docker compose exec web python manage.py createsuperuser
-    ```
-
-4.  **Stop Services**
-    ```bash
-    sudo docker compose down
-    ```
-    *(Use `docker compose` with a space for V2, or `docker-compose` for V1)*
-
-### Method 2: Local Development
-1.  **Environment Setup**
-    ```bash
-    python3 -m venv venv
-    source venv/bin/activate  # Windows: venv\Scripts\activate
-    pip install -r requirements.txt
-    ```
-
-2.  **Initialize Database**
-    ```bash
-    python manage.py migrate
-    python manage.py load_surname_mappings
-    python manage.py createsuperuser
-    ```
-
-3.  **Run Server**
-    ```bash
-    python manage.py runserver
-    ```
-
----
-
-## Configuration
-
-The application uses environment variables for configuration. In Docker, these are set in `docker-compose.yml`. For production, use a `.env` file.
-
-| Variable | Description | Default |
-| :--- | :--- | :--- |
-| `DEBUG` | Toggle debug mode (True/False) | `True` |
-| `SECRET_KEY` | Django security key | *(Default dev key)* |
-| `ALLOWED_HOSTS` | Comma-separated allowlist | `localhost,127.0.0.1` |
-| `CORS_ALLOWED_ORIGINS`| Frontend URLs for CORS | `http://localhost:3000` |
-
----
-
-### API Endpoints with Examples
-
-#### Public Endpoints (No Authentication Required)
-
-##### 1. **GET /api/voters/** - List/Search Voters
-Returns paginated list of voters with support for filtering and searching.
-
-**Query Parameters:**
-- `page` - Page number (default: 1)
-- `page_size` - Results per page (default: 50, max: 200)
-- `age_min`, `age_max` - Age range filter
-- `age_group` - Filter by age category (`gen_z`, `working`, `mature`, `senior`)
-- `gender` - Filter by gender (`male`, `female`, `other`)
-- `caste_group` - Filter by caste group
-- `ward` - Filter by ward number
-- `search` - Search in voter names
-
-**Example Request:**
+#### **Step 1: Start the System**
 ```bash
-# Get all voters
-curl http://localhost:8000/api/voters/
-
-# Filter: age 25-40, ward 5
-curl "http://localhost:8000/api/voters/?age_min=25&age_max=40&ward=5"
+sudo docker compose up --build -d
 ```
 
-**What you will get:**
-- `count`: Total number of voters matching filters.
-- `next/previous`: Links to next/previous pages.
-- `results`: Array of voter objects containing:
-  - `voter_id`: Unique identifier from voter roll.
-  - `name`: Full name of voter.
-  - `age`: Age in years.
-  - `age_group`: Category (e.g., "working").
-  - `gender`: male/female/other.
-  - `ward`: Ward number.
-  - `caste_group`: Inferred ethnicity (e.g., "brahmin").
+#### **Step 2: Initialize Database and Mappings**
+Run these commands once to set up the system.
+```bash
+# 1. Create database tables
+sudo docker compose exec web python manage.py migrate
 
-**Example Response:**
+# 2. Load surname-to-caste mappings (Critical for demographic analysis)
+sudo docker compose exec web python manage.py load_surname_mappings
+
+# 3. Create an admin user (for logging in to /admin)
+sudo docker compose exec web python manage.py createsuperuser
+```
+
+---
+
+## 📂 Data Import Procedures
+
+### **Option A: Importing Large Datasets (CLI Method)**
+**Best for:** Bulk imports, large files, avoiding timeouts.
+
+**1. Place Data in the Correct Location**
+All your CSV folders must be inside the project's `backend/data/` directory.
+
+> **Path Mapping:** 
+> *   Current Location: `backend/data/YourFolder`
+> *   Docker Location: `/app/data/YourFolder`
+
+**2. Choose Your Import Method**
+
+#### **Scenario 1: Import a Single Province**
+Structure: `backend/data/GandakiProvince/` (containing CSVs for constituencies)
+
+**Command:**
+```bash
+# Syntax: import_voter_data /app/data/<Folder_Name>
+sudo docker compose exec web python manage.py import_voter_data /app/data/GandakiProvince
+```
+
+#### **Scenario 2: Bulk Import (Multiple Provinces)**
+Structure: `backend/data/AllProvinces/` (containing `Gandaki`, `Bagamati`, etc.)
+
+**Command:**
+```bash
+sudo docker compose exec web python manage.py import_voter_data /app/data/AllProvinces
+```
+
+**3. Verify**
+You will see a summary of files processed and records imported in the terminal.
+
+
+---
+
+## 📊 API Usage
+
+### **Analysis Endpoints**
+Get demographic breakdowns filtered by hierarchy.
+
+- **Overview**: `GET /api/analysis/overview/`
+- **Age Distribution**: `GET /api/analysis/age-distribution/`
+- **Caste Distribution**: `GET /api/analysis/caste-distribution/`
+
+**Filters:**
+You can filter any analysis endpoint by:
+- `province` (e.g., `?province=Bagamati`)
+- `constituency` (e.g., `?constituency=Kathmandu-1`)
+- `district`
+- `ward`
+
+### **Voter Search**
+Search for individual voters.
+- `GET /api/voters/?search=Ram&constituency=Kathmandu-1`
+
+---
+
+## 📖 API Endpoint Examples
+
+> [!IMPORTANT]
+> **Data Language Format**
+> Please note the specific language requirements for different fields based on the source data:
+> - **Nepali (Devanagari)**: Name (`name`), Province (`province`), District (`district`), Municipality (`municipality`).
+> - **English / Numbers**: Constituency (`constituency`), Ward (`ward`), Age (`age`), Voter ID (`voter_id`).
+> 
+> *Example:* Searching for a voter in "Kaski" district must use `?district=कास्की`.
+
+### 1. Analysis Endpoints (Public)
+
+#### **Overview Statistics**
+Get total counts broken down by demographics.
+- **Endpoint**: `GET /api/analysis/overview/`
+- **Parameters**: `province`, `district`, `constituency`, `ward`, `age_min`, `age_max`, `gender`, `caste_group`
+
+**Request:**
+```bash
+# Get stats for Gandaki Province (using Nepali name)
+curl "http://localhost:8000/api/analysis/overview/?province=गण्डकी"
+
+# Get stats for Baglung District (Nepali), Constituency 1 (English)
+curl "http://localhost:8000/api/analysis/overview/?district=बाग्लुङ&constituency=Baglung-1"
+```
+
+**Response:**
 ```json
 {
-  "count": 250,
-  "next": "http://localhost:8000/api/voters/?page=2",
+  "total_voters": 150000,
+  "average_age": 42.5,
+  "gender_distribution": { "male": 76000, "female": 74000 },
+  "caste_group_distribution": { "Brahmin": 45000, "Chhetri": 40000 },
+  "age_group_distribution": { "gen_z": 30000, "working": 60000 }
+}
+```
+
+#### **Age Distribution**
+Get age groups for charts.
+- **Endpoint**: `GET /api/analysis/age-distribution/`
+
+**Request:**
+```bash
+# Get age distribution for Ward 4 in Baglung
+curl "http://localhost:8000/api/analysis/age-distribution/?district=बाग्लुङ&ward=4"
+```
+
+**Response:**
+```json
+{
+  "labels": ["18-25", "26-40", "41-60", "60+"],
+  "data": [1500, 4500, 3000, 1000]
+}
+```
+
+---
+
+### 2. Voter Data Endpoints (Public)
+
+#### **List & Search Voters**
+- **Endpoint**: `GET /api/voters/`
+- **Parameters**: `search` (name/voter_id), `province`, `district`, `constituency`
+
+**Request:**
+```bash
+# Search by Name in Nepali
+curl "http://localhost:8000/api/voters/?search=बहादुर"
+
+# Filter by District (Nepali) and Ward (Number)
+curl "http://localhost:8000/api/voters/?district=बाग्लुङ&ward=4"
+```
+
+**Response:**
+```json
+{
+  "count": 1,
+  "next": null,
   "previous": null,
   "results": [
     {
-      "id": 1,
-      "voter_id": "V12345",
-      "name": "Ram Kumar Sharma",
-      "age": 32,
-      "age_group": "working",
-      "gender": "male",
-      "ward": 5,
-      "caste_group": "brahmin"
+      "voter_id": 12345678,
+      "name": "डन बहादुर थापा",
+      "age": 43,
+      "province": "GandakiProvince",
+      "district": "बाग्लुङ",
+      "constituency": "Baglung-1",
+      "municipality": "Baglung",
+      "ward": 4
     }
   ]
 }
 ```
 
----
+#### **Get Single Voter**
+- **Endpoint**: `GET /api/voters/{id}/`
 
-##### 2. **GET /api/analysis/overview/** - Demographic Overview
-Returns comprehensive demographic statistics for all voters (or filtered subset).
-
-**Example Request:**
+**Request:**
 ```bash
-curl http://localhost:8000/api/analysis/overview/
-```
-
-**What you will get:**
-- `total_voters`: Total count in the selection.
-- `average_age`: Arithmetic mean of ages.
-- `median_age`: Middle value of ages.
-- `gender_distribution`: Object with counts per gender.
-- `age_group_summary`: Object with counts per age category.
-- `caste_summary`: Object with counts per caste group.
-
-**Example Response:**
-```json
-{
-  "total_voters": 2450,
-  "average_age": 42.5,
-  "median_age": 40,
-  "gender_distribution": { "male": 1250, "female": 1180, "other": 20 },
-  "age_group_summary": { "gen_z": 580, "working": 920, "mature": 680, "senior": 270 },
-  "caste_summary": { "brahmin": 520, "chhetri": 680, "janajati": 550, ... }
-}
+curl "http://localhost:8000/api/voters/12345678/"
 ```
 
 ---
 
-##### 3. **GET /api/analysis/age-distribution/** - Age Distribution
-Returns age group data specifically formatted for chart libraries.
+### 3. Admin Endpoints
 
-**Example Request:**
+#### **Upload History**
+Check status of past uploads.
+- **Endpoint**: `GET /api/admin/upload-history/`
+
+**Request:**
 ```bash
-curl http://localhost:8000/api/analysis/age-distribution/
+curl "http://localhost:8000/api/admin/upload-history/"
 ```
 
-**What you will get:**
-- `chart_data`:
-  - `labels`: Human-readable category names.
-  - `values`: Raw counts for each category.
-  - `percentages`: Percentage of total for each category.
-- `total`: Total voters analyzed.
-
-**Example Response:**
+**Response:**
 ```json
-{
-  "chart_data": {
-    "labels": ["Gen Z (18-29)", "Working (30-45)", "Mature (46-60)", "Senior (60+)"],
-    "values": [580, 920, 680, 270],
-    "percentages": [23.7, 37.6, 27.8, 11.0]
-  },
-  "total": 2450
-}
+[
+  {
+    "id": 1,
+    "file_name": "Gandaki_Kaski.csv",
+    "uploaded_at": "2023-10-27T10:00:00Z",
+    "status": "completed",
+    "total_records": 5000,
+    "success_count": 5000,
+    "error_count": 0
+  }
+]
 ```
+
+#### **Surname Mappings (Manage Castes)**
+Manage how surnames are mapped to caste groups.
+
+> **Note:** Surnames are stored in **Nepali**. You must search using Nepali text (e.g., `थापा`) unless an English mapping explicitly exists.
+
+- **List/Search**: `GET /api/admin/surnames/?search=Thinking`
+- **Create**: `POST /api/admin/surnames/`
+- **Update**: `PUT /api/admin/surnames/{id}/`
+- **Delete**: `DELETE /api/admin/surnames/{id}/`
+
+**Examples:**
+
+1. **Search (Nepali)**:
+   ```bash
+   curl "http://localhost:8000/api/admin/surnames/?search=थापा"
+   ```
+   *Response:*
+   ```json
+   [
+     { "id": 15, "surname": "थापा", "caste_group": "chhetri" }
+   ]
+   ```
+
+2. **Add New Mapping (English)**:
+   ```bash
+   curl -X POST http://localhost:8000/api/admin/surnames/ \
+     -H "Content-Type: application/json" \
+     -d '{"surname": "Thapa", "caste_group": "chhetri"}'
+   ```
+
+#### **Upload Data (CSV)**
+
+- **Upload CSV**:
+  ```bash
+  curl -X POST http://localhost:8000/api/admin/upload/ \
+    -F "file=@/path/to/data.csv"
+  ```
+
+## 🛠️ Access Points
+
+- **API Root**: [http://localhost:8000/api/](http://localhost:8000/api/)
+- **Admin Panel**: [http://localhost:8000/admin/](http://localhost:8000/admin/) (Login with the superuser created in Step 2)
 
 ---
 
-#### Admin & Management Endpoints (Bypassed CSRF for Frontend Integration)
+## 🐞 Troubleshooting
 
-##### 4. **POST /api/admin/upload/** - Upload CSV File
-Processes a CSV file and returns import statistics.
+**"Folder does not exist" Error**:
+Ensure you placed your data folder inside `backend/data/` on your host machine, and are referencing it as `/app/data/...` in the command.
 
-**Example Request:**
-```bash
-curl -X POST http://localhost:8000/api/admin/upload/ -F "file=@voters.csv"
-```
-> [!NOTE]
-> Authentication is currently relaxed for this endpoint to facilitate frontend testing.
-
-**What you will get:**
-- `success`: Boolean status.
-- `total`: Total rows found in CSV.
-- `imported`: Successfully saved records.
-- `failed`: Records skipped due to errors.
-- `unmapped_surnames`: List of surnames found that have no caste mapping (useful for admin review).
-- `processing_time`: Seconds taken to process.
-
-**Example Response:**
-```json
-{
-  "success": true,
-  "total": 500,
-  "imported": 485,
-  "failed": 15,
-  "unmapped_surnames": ["Xyz", "Unknown"],
-  "processing_time": 2.35
-}
-```
-
----
-
-##### 5. **GET /api/admin/upload-history/** - Upload History
-List of past CSV processing jobs.
-
-**What you will get:**
-- `results`: List of jobs containing:
-  - `file_name`: Original name of uploaded file.
-  - `status`: completed/failed.
-  - `successful_imports/failed_imports`: Specific counts for that job.
-  - `uploaded_at`: Timestamp.
-
-**Example Response:**
-```json
-{
-  "results": [
-    {
-      "file_name": "voters_ward5.csv",
-      "total_records": 500,
-      "successful_imports": 485,
-      "status": "completed"
-    }
-  ]
-}
-```
-
----
-
-##### 6. **GET /api/admin/surnames/** - Surname Mappings
-Manage the database used to infer caste from surnames.
-
-**Example Request:**
-```bash
-# Add new mapping
-curl -X POST http://localhost:8000/api/admin/surnames/ \
-  -H "Content-Type: application/json" -d '{"surname": "Sharma", "caste_group": "brahmin"}'
-```
-
-**Upsert Behavior**:
-If a surname already exists in the database, a `POST` request will **update** the existing record instead of returning secondary errors. This allows for seamless batch loading from the frontend.
-
-**What you will get:**
-- `surname`: The family name.
-- `caste_group`: The category it maps to.
-
-**Example Response:**
-```json
-{
-  "id": 1,
-  "surname": "Sharma",
-  "caste_group": "brahmin"
-}
-```
-
-
----
-
-## Troubleshooting
-
-### Port Conflicts
-**Error**: `Error: That port is already in use.`
-**Solution**: verify no other service is using port 8000.
-*   **Docker**: Change the port mapping in `docker-compose.yml` (e.g., `"8080:8000"`).
-*   **Local**: Run on a different port: `python manage.py runserver 8081`.
-
-### Database Persistence
-In Docker, database files (`db.sqlite3`) and uploaded files are persisted in the `./data` directory on your host machine. Do not delete this folder unless you intend to reset the data.
-
-### Missing Caste Data
-If voters appear as "Unknown" caste:
-1.  Check `api/admin/surnames/` to see if the surname is mapped.
-2.  Add a new mapping via the Admin Panel or API.
-3.  Re-process the upload or update the record.
->>>>>>> b549d45 (vote classifier done)
+**"Permission Denied"**:
+Always use `sudo` with `docker compose` commands if you are not in the docker group.

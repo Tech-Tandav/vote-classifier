@@ -163,11 +163,57 @@ SPECTACULAR_SETTINGS = {
 
 
 
+
 # Max size of request body (in bytes)
 DATA_UPLOAD_MAX_MEMORY_SIZE = 50 * 1024 * 1024  # 50 MB
 
 # Max size of uploaded file kept in memory (before writing to disk)
 FILE_UPLOAD_MAX_MEMORY_SIZE = 50 * 1024 * 1024  # 50 MB
+
+# CORS Settings (for frontend integration)
+CORS_ALLOW_ALL_ORIGINS = True  # Relaxed for development
+CORS_ALLOWED_ORIGINS = os.environ.get(
+    'CORS_ALLOWED_ORIGINS',
+    "http://localhost:3000"
+).split(',')
+
+CORS_ALLOW_CREDENTIALS = True
+
+# CSRF Settings
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+# Allow all HTTP methods
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+# Allow all headers including those needed for file uploads
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+
+# File Upload Settings
+# Limit to 55MB to prevent timeouts
+DATA_UPLOAD_MAX_MEMORY_SIZE = 57671680  # 55MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 57671680  # 55MB
+
 
 
 # Logging Configuration
