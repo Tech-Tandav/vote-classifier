@@ -10,7 +10,7 @@ services:
     build: .
     container_name: voter_backend
     ports:
-      - 9494:80
+      - 9494:8000
     environment:
       DEBUG: "True"
       SECRET_KEY: your-secret-key-change-in-production
