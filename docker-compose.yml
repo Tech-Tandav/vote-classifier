@@ -21,7 +21,7 @@ services:
       DATABASE_URL: postgres://user:pass@db:5432/mydb
 
     volumes:
-      - vote_classifier:/app/data
+      - vote_classifier:/app/main
     stdin_open: true
     tty: true
     networks:
