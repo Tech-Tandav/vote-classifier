@@ -240,3 +240,4 @@ LOGGING = {
         },
     },
 }
+DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"

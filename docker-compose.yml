@@ -15,6 +15,7 @@ services:
       DEBUG: "True"
       SECRET_KEY: your-secret-key-change-in-production
       ALLOWED_HOSTS: localhost,127.0.0.1,django
+      ENV DJANGO_DEBUG: False
     volumes:
       - vote_classifier:/app/data
     stdin_open: true
