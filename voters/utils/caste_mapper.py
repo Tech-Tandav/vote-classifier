@@ -77,7 +77,9 @@ class CasteMapper:
         for key, value in self.mappings.items():
             if key == surname:
                 return value
-        
+            print(key)
+            print(surname)
+            print("***********")
         # Not found
         logger.debug(f"Surname not mapped: {surname}")
         return 'unknown'
