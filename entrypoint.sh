@@ -6,8 +6,8 @@ python manage.py migrate
 
 echo "Creating superuser (if not exists)..."
 python manage.py create_admin || true
-python manage.py import_csv || true
+# python manage.py import_csv || true
 python manage.py load_surname_mappings || true
-# python manage.py import_voter_data /app/data/GandakiProvince
+python manage.py import_voter_data area/GandakiProvince
 echo "Starting server..."
 exec "$@"
