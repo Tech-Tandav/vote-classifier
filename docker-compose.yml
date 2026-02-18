@@ -41,13 +41,13 @@ services:
       - vote_classifier
     restart: always
   
-  postgres:
-    build:
-      context: .
-      dockerfile: ./compose/postgres/Dockerfile
-    image: vote_production_postgres
-    volumes:
-      - production_postgres_data:/var/lib/postgresql/data
-      - production_postgres_data_backups:/backups
-    env_file:
-      - ./.envs/.local/.postgres
+  # postgres:
+  #   build:
+  #     context: .
+  #     dockerfile: ./compose/postgres/Dockerfile
+  #   image: vote_production_postgres
+  #   volumes:
+  #     - production_postgres_data:/var/lib/postgresql/data
+  #     - production_postgres_data_backups:/backups
+  #   env_file:
+  #     - ./.envs/.local/.postgres
