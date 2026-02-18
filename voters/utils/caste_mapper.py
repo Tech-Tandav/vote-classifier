@@ -75,7 +75,7 @@ class CasteMapper:
         
         # Try case-insensitive search for English names
         for key, value in self.mappings.items():
-            if key.lower() == surname.lower():
+            if key == surname:
                 return value
         
         # Not found
