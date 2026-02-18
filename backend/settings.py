@@ -69,12 +69,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
+import dj_database_url
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'data' / 'db.sqlite3',
-    }
+    "default": dj_database_url.config(default=os.getenv("DATABASE_URL"))
 }
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -240,4 +240,4 @@ LOGGING = {
         },
     },
 }
-DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
+DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"

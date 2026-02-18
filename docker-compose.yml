@@ -16,6 +16,8 @@ services:
       SECRET_KEY: your-secret-key-change-in-production
       ALLOWED_HOSTS: localhost,127.0.0.1,django
       ENV DJANGO_DEBUG: False
+      DATABASE_URL: postgres://user:pass@db:5432/mydb
+
     volumes:
       - vote_classifier:/app/data
     stdin_open: true
@@ -36,3 +38,14 @@ services:
     networks:
       - vote_classifier
     restart: always
+  
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/postgres/Dockerfile
+    image: vote_production_postgres
+    volumes:
+      - production_postgres_data:/var/lib/postgresql/data
+      - production_postgres_data_backups:/backups
+    env_file:
+      - ./.envs/.production/.postgres
