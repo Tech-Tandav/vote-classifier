@@ -23,3 +23,6 @@ Pillow==10.2.0
 
 # Whitenoise for static files
 whitenoise==6.6.0
+
+
+gunicorn==25.1.0
