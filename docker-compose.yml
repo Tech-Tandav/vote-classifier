@@ -1,5 +1,6 @@
 volumes:
   vote_classifier: {}
+  production_postgres_data: {}
 
 networks:
   vote_classifier:
