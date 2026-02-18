@@ -10,7 +10,7 @@ services:
     build: .
     container_name: voter_backend
     ports:
-      - "8000:8000"
+      - 9494:80
     environment:
       DEBUG: "True"
       SECRET_KEY: your-secret-key-change-in-production
@@ -21,17 +21,17 @@ services:
     tty: true
     networks:
       - vote_classifier
-  nginx:
-    build:
-      context: .
-      dockerfile: ./compose/nginx/Dockerfile
-    image: vote_classifier
-    depends_on:
-      - django
-    volumes:
-      - vote_classifier:/app/media
-    ports:
-      - 9494:80
-    networks:
-      - vote_classifier
-    restart: always
+  # nginx:
+  #   build:
+  #     context: .
+  #     dockerfile: ./compose/nginx/Dockerfile
+  #   image: vote_classifier
+  #   depends_on:
+  #     - django
+  #   volumes:
+  #     - vote_classifier:/app/media
+  #   ports:
+  #     - 9494:80
+  #   networks:
+  #     - vote_classifier
+  #   restart: always
