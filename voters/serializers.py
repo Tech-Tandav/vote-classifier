@@ -140,9 +140,9 @@ class CSVUploadSerializer(serializers.Serializer):
         if not value.name.endswith('.csv'):
             raise serializers.ValidationError("File must be a CSV file (.csv)")
         
-        # Check file size (max 10MB)
-        if value.size > 10 * 1024 * 1024:
-            raise serializers.ValidationError("File size must be less than 10MB")
+        # # Check file size (max 10MB)
+        # if value.size > 10 * 1024 * 1024:
+        #     raise serializers.ValidationError("File size must be less than 10MB")
         
         return value
 
