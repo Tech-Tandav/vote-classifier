@@ -142,6 +142,13 @@ class Voter(models.Model):
     # Location Information
     province = models.CharField(max_length=100)
     district = models.CharField(max_length=100)
+    constituency = models.CharField(
+        max_length=100, 
+        db_index=True, 
+        null=True, 
+        blank=True,
+        help_text="Constituency/Area name (derived from filename)"
+    )
     municipality = models.CharField(max_length=100)
     ward = models.IntegerField(db_index=True)
     center = models.CharField(max_length=200)

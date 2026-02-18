@@ -32,6 +32,7 @@ class VoterSerializer(serializers.ModelSerializer):
             'caste_group',
             'province',
             'district',
+            'constituency',
             'municipality',
             'ward',
             'center',
@@ -63,6 +64,7 @@ class VoterListSerializer(serializers.ModelSerializer):
             'surname',
             'caste_group',
             'ward',
+            'constituency',
         ]
 
 
@@ -141,6 +143,32 @@ class CSVUploadSerializer(serializers.Serializer):
         # Check file size (max 10MB)
         if value.size > 10 * 1024 * 1024:
             raise serializers.ValidationError("File size must be less than 10MB")
+        
+        return value
+
+
+class ZipUploadSerializer(serializers.Serializer):
+    """
+    Serializer for ZIP file upload (Province/Constituency folders).
+    Validates file format and size.
+    """
+    
+    file = serializers.FileField(
+        help_text="ZIP file containing province folders and constituency CSVs"
+    )
+    
+    def validate_file(self, value):
+        """
+        Validate uploaded file.
+        Check file extension and size.
+        """
+        # Check file extension
+        if not value.name.lower().endswith('.zip'):
+            raise serializers.ValidationError("File must be a ZIP file (.zip)")
+        
+        # Check file size (max 55MB)
+        if value.size > 55 * 1024 * 1024:
+            raise serializers.ValidationError("File size must be less than 55MB")
         
         return value
 

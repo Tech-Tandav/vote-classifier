@@ -24,11 +24,13 @@ from voters.serializers import (
     SurnameMappingSerializer,
     UploadHistorySerializer,
     CSVUploadSerializer,
+    ZipUploadSerializer,
     OverviewStatsSerializer,
     DistributionResponseSerializer,
     CrossAnalysisResponseSerializer,
 )
 from voters.utils import process_csv_file, get_analytics
+from voters.utils.zip_processor import process_zip_file
 import logging
 
 logger = logging.getLogger(__name__)
@@ -50,7 +52,11 @@ def apply_filters(queryset, request):
     - age_min, age_max: Age range
     - age_group: Age category (gen_z, working, mature, senior)
     - gender: Gender (male, female, other)
+    - gender: Gender (male, female, other)
     - caste_group: Caste group
+    - province: Province name
+    - district: District name
+    - constituency: Constituency name
     - ward: Ward number
     - search: Search in name
     
@@ -81,9 +87,45 @@ def apply_filters(queryset, request):
         queryset = queryset.filter(gender=gender)
     
     # Caste group filter
+    # Caste group filter
     caste_group = request.query_params.get('caste_group')
     if caste_group:
         queryset = queryset.filter(caste_group=caste_group)
+    
+    # Province Mapping (Nepali -> English)
+    PROVINCE_MAPPING = {
+        'कोशी': 'Koshi',
+        'कोशी प्रदेश': 'Koshi',
+        'मधेश': 'Madhesh',
+        'मधेश प्रदेश': 'Madhesh',
+        'बागमती': 'Bagmati',
+        'बागमती प्रदेश': 'Bagmati',
+        'गण्डकी': 'Gandaki',
+        'गण्डकी प्रदेश': 'Gandaki',
+        'लुम्बिनी': 'Lumbini',
+        'लुम्बिनी प्रदेश': 'Lumbini',
+        'कर्णाली': 'Karnali',
+        'कर्णाली प्रदेश': 'Karnali',
+        'सुदूरपश्चिम': 'Sudurpashchim',
+        'सुदूरपश्चिम प्रदेश': 'Sudurpashchim',
+    }
+
+    # Province filter
+    province = request.query_params.get('province')
+    if province:
+        # Check if input is in Nepali mapping
+        mapped_province = PROVINCE_MAPPING.get(province.strip(), province)
+        queryset = queryset.filter(province__icontains=mapped_province)
+
+    # District filter
+    district = request.query_params.get('district')
+    if district:
+        queryset = queryset.filter(district__icontains=district)
+
+    # Constituency filter
+    constituency = request.query_params.get('constituency')
+    if constituency:
+        queryset = queryset.filter(constituency__icontains=constituency)
     
     # Ward filter
     ward = request.query_params.get('ward')
@@ -112,6 +154,8 @@ def apply_filters(queryset, request):
         OpenApiParameter('age_group', OpenApiTypes.STR, description='Age group filter'),
         OpenApiParameter('gender', OpenApiTypes.STR, description='Gender filter'),
         OpenApiParameter('caste_group', OpenApiTypes.STR, description='Caste group filter'),
+        OpenApiParameter('province', OpenApiTypes.STR, description='Province filter'),
+        OpenApiParameter('constituency', OpenApiTypes.STR, description='Constituency filter'),
         OpenApiParameter('ward', OpenApiTypes.INT, description='Ward number'),
     ],
     responses={200: OverviewStatsSerializer}
@@ -271,6 +315,57 @@ def upload_csv(request):
             'imported': result.get('imported', 0),
             'failed': result.get('failed', 0),
         }, status=status.HTTP_400_BAD_REQUEST)
+
+
+@extend_schema(
+    tags=['Admin'],
+    summary='Upload ZIP file with Province/Constituency folders',
+    description='Upload ZIP file containing folders for provinces and CSVs for constituencies.',
+    request=ZipUploadSerializer,
+    responses={
+        200: {
+            'type': 'object',
+            'properties': {
+                'success': {'type': 'boolean'},
+                'message': {'type': 'string'},
+                'total_files': {'type': 'integer'},
+                'processed_files': {'type': 'integer'},
+                'total_records': {'type': 'integer'},
+                'imported_records': {'type': 'integer'},
+                'failed_records': {'type': 'integer'},
+                'unmapped_surnames': {'type': 'array'},
+            }
+        }
+    }
+)
+@api_view(['POST'])
+@authentication_classes([])
+@permission_classes([AllowAny])
+def upload_zip(request):
+    """
+    Upload and process ZIP file.
+    
+    Structure:
+    Province/
+      Constituency.csv
+    """
+    serializer = ZipUploadSerializer(data=request.data)
+    
+    if not serializer.is_valid():
+        return Response(
+            {'error': serializer.errors},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    zip_file = serializer.validated_data['file']
+    
+    logger.info(f"Processing ZIP upload: {zip_file.name}")
+    result = process_zip_file(zip_file, request.user if request.user.is_authenticated else None)
+    
+    if result['success']:
+        return Response(result)
+    else:
+        return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UploadHistoryViewSet(viewsets.ReadOnlyModelViewSet):

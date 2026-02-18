@@ -25,4 +25,5 @@ urlpatterns = [
     
     # Admin Endpoints
     path('admin/upload/', views.upload_csv, name='admin-upload-csv'),
+    path('admin/upload-zip/', views.upload_zip, name='admin-upload-zip'),
 ]
