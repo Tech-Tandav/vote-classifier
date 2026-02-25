@@ -55,9 +55,9 @@ services:
   #     - production_postgres_data:/var/lib/postgresql/data
   
   postgres:
-    build: postgres:15
-      # context: .
-      # dockerfile: ./compose/postgres/Dockerfile
+    build: 
+      context: .
+      dockerfile: ./compose/postgres/Dockerfile
     image: vote_production_postgres
     volumes:
       - production_postgres_data:/var/lib/postgresql/data
@@ -66,3 +66,4 @@ services:
       - ./.envs/.local/.postgres
     networks:
       - vote_classifier
+
