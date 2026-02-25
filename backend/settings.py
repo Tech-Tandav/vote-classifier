@@ -71,10 +71,10 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 import dj_database_url
 
-DATABASES = {
-        "default": dj_database_url.config(default=os.getenv("DATABASE_URL")),
-        'ENGINE': 'django.db.backends.postgresql',
-}
+# DATABASES = {
+#         "default": dj_database_url.config(default=os.getenv("DATABASE_URL")),
+#         'ENGINE': 'django.db.backends.postgresql',
+# }
 
 
 #
@@ -88,16 +88,16 @@ DATABASES = {
 #    }
 #}
 #
-#DATABASES = {
-#   'default': {
-#       'ENGINE': 'django.db.backends.postgresql',
-#       'NAME': 'area',
-#       'USER': 'user',
-#       'PASSWORD': 'pass',
-#        'HOST': 'db',  # matches docker-compose service name
-#        'PORT': '5432',
-#   }
-#}
+DATABASES = {
+  'default': {
+      'ENGINE': 'django.db.backends.postgresql',
+      'NAME': 'mydb',
+      'USER': 'username',
+      'PASSWORD': 'password',
+       'HOST': 'postgres',  # matches docker-compose service name
+       'PORT': '5432',
+  }
+}
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
