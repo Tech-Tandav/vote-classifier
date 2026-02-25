@@ -69,10 +69,11 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
-# import dj_database_url
+import dj_database_url
 
 DATABASES = {
-        "default": dj_database_url.config(default=os.getenv("DATABASE_URL"))
+        "default": dj_database_url.config(default=os.getenv("DATABASE_URL")),
+        'ENGINE': 'django.db.backends.postgresql',
 }
 
 # DATABASES = {
