@@ -1,0 +1,66 @@
+volumes:
+  vote_classifier: {}
+  production_postgres_data: {}
+  production_postgres_data_backups: {}
+
+networks:
+  vote_classifier:
+
+
+services:
+  django:
+    build: .
+    container_name: voter_backend
+    # ports:
+    #   - 9494:8000
+    environment:
+      DEBUG: "True"
+      SECRET_KEY: your-secret-key-change-in-production
+      ALLOWED_HOSTS: localhost,127.0.0.1,django
+      ENV DJANGO_DEBUG: False
+      DATABASE_URL: postgres://user:pass@db:5432/mydb
+
+    volumes:
+      - vote_classifier:/app/area
+    stdin_open: true
+    tty: true
+    networks:
+      - vote_classifier
+  nginx:
+    build:
+      context: .
+      dockerfile: ./compose/nginx/Dockerfile
+    image: vote_classifier
+    depends_on:
+      - django
+    volumes:
+      - vote_classifier:/app/media
+    ports:
+      - 9494:80
+    networks:
+      - vote_classifier
+    restart: always
+
+
+  db:
+    image: postgres:15
+    container_name: area-postgres
+    environment:
+      POSTGRES_DB: area
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    networks:
+      - vote_classifier
+    volumes:
+      - production_postgres_data:/var/lib/postgresql/data
+  
+  # postgres:
+  #   build:
+  #     context: .
+  #     dockerfile: ./compose/postgres/Dockerfile
+  #   image: vote_production_postgres
+  #   volumes:
+  #     - production_postgres_data:/var/lib/postgresql/data
+  #     - production_postgres_data_backups:/backups
+  #   env_file:
+  #     - ./.envs/.local/.postgres
