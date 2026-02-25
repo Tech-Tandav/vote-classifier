@@ -42,17 +42,17 @@ services:
     restart: always
 
 
-  db:
-    image: postgres:15
-    container_name: area-postgres
-    environment:
-      POSTGRES_DB: mydb
-      POSTGRES_USER: username
-      POSTGRES_PASSWORD: password
-    networks:
-      - vote_classifier
-    volumes:
-      - production_postgres_data:/var/lib/postgresql/data
+  # db:
+  #   image: postgres:15
+  #   container_name: area-postgres
+  #   environment:
+  #     POSTGRES_DB: mydb
+  #     POSTGRES_USER: username
+  #     POSTGRES_PASSWORD: password
+  #   networks:
+  #     - vote_classifier
+  #   volumes:
+  #     - production_postgres_data:/var/lib/postgresql/data
   
   postgres:
     build:
